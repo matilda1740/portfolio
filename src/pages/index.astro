@@ -1,16 +1,18 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+	<main class="mx-auto flex min-h-screen max-w-5xl items-center px-6 py-16 sm:px-10">
+		<section class="max-w-2xl">
+			<p class="mb-6 font-mono text-sm uppercase tracking-[0.18em] text-muted">Portfolio in progress</p>
+			<h1 class="font-heading text-5xl leading-tight sm:text-6xl">Your Name</h1>
+			<p class="mt-6 max-w-xl text-lg leading-8 text-muted">
+				Software engineer building practical web and machine-learning products.
+			</p>
+			<p class="mt-8 border-l-2 border-accent pl-4 text-sm leading-7 text-muted">
+				This site is being prepared. Project case studies, resume, and contact details will be added next.
+			</p>
+		</section>
+	</main>
+</BaseLayout>

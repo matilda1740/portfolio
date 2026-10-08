@@ -1,0 +1,64 @@
+@import '@fontsource/fraunces/400.css';
+@import '@fontsource/fraunces/500.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/jetbrains-mono/400.css';
+
+:root {
+	--bg: #fffbf0;
+	--surface: #f7efe2;
+	--text: #53161d;
+	--text-muted: #7a4a50;
+	--border: #d9c9bd;
+	--border-strong: #bfa79c;
+	--accent: #53161d;
+	--accent-hover: #a8434f;
+	--accent-soft: #f0d9d3;
+	--on-accent: #fffbf0;
+	--focus: #a8434f;
+	--success: #3f6b45;
+	--error: #b3261e;
+}
+
+[data-theme='dark'] {
+	--bg: #53161d;
+	--surface: #5f1f27;
+	--text: #fffbf0;
+	--text-muted: #e3c9c2;
+	--border: #8a4a52;
+	--border-strong: #a56a70;
+	--accent: #e8a5a0;
+	--accent-hover: #fffbf0;
+	--accent-soft: #7a2f39;
+	--on-accent: #53161d;
+	--focus: #e8a5a0;
+	--success: #8fc79a;
+	--error: #ff9e94;
+}
+
+html {
+	background: var(--bg);
+	color: var(--text);
+	font-family: Inter, system-ui, sans-serif;
+}
+
+body {
+	margin: 0;
+	min-width: 320px;
+}
+
+:focus-visible {
+	outline: 3px solid var(--focus);
+	outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+	}
+}
