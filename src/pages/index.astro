@@ -3,16 +3,55 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout>
-	<main class="mx-auto flex min-h-screen max-w-5xl items-center px-6 py-16 sm:px-10">
-		<section class="max-w-2xl">
-			<p class="mb-6 font-mono text-sm uppercase tracking-[0.18em] text-muted">Portfolio in progress</p>
-			<h1 class="font-heading text-5xl leading-tight sm:text-6xl">Your Name</h1>
-			<p class="mt-6 max-w-xl text-lg leading-8 text-muted">
-				Software engineer building practical web and machine-learning products.
+	<main>
+		<section class="mx-auto max-w-5xl px-6 py-24 sm:px-10 sm:py-32">
+			<p class="mb-6 font-mono text-sm uppercase tracking-[0.18em] text-muted">Software engineer</p>
+			<h1 class="max-w-3xl font-heading text-5xl leading-tight sm:text-7xl">Building practical web and machine-learning products.</h1>
+			<p class="mt-8 max-w-2xl text-lg leading-8 text-muted">
+				A focused portfolio of selected engineering, research, and product work.
 			</p>
-			<p class="mt-8 border-l-2 border-accent pl-4 text-sm leading-7 text-muted">
-				This site is being prepared. Project case studies, resume, and contact details will be added next.
-			</p>
+			<div class="mt-10 flex flex-wrap gap-4">
+				<a class="rounded-full bg-accent px-5 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-hover" href="#work">View selected work</a>
+				<a class="rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:border-border-strong hover:bg-surface" href="/resume">View resume</a>
+			</div>
+		</section>
+
+		<section id="work" class="border-t border-border">
+			<div class="mx-auto max-w-5xl px-6 py-20 sm:px-10">
+				<p class="font-mono text-sm uppercase tracking-[0.18em] text-muted">Selected work</p>
+				<h2 class="mt-4 font-heading text-4xl">Projects with a purpose.</h2>
+				<div class="mt-10 grid gap-6 md:grid-cols-3">
+					<div class="rounded-2xl border border-border bg-surface p-6">
+						<p class="font-mono text-xs text-muted">01 · Research</p>
+						<h3 class="mt-5 font-heading text-2xl">MicroVision</h3>
+						<p class="mt-3 text-sm leading-6 text-muted">TODO: Add the verified project outcome and repository link.</p>
+					</div>
+					<div class="rounded-2xl border border-border bg-surface p-6">
+						<p class="font-mono text-xs text-muted">02 · Product engineering</p>
+						<h3 class="mt-5 font-heading text-2xl">Shades of Ruth</h3>
+						<p class="mt-3 text-sm leading-6 text-muted">TODO: Add the verified project outcome and repository link.</p>
+					</div>
+					<div class="rounded-2xl border border-border bg-surface p-6">
+						<p class="font-mono text-xs text-muted">03 · Product design</p>
+						<h3 class="mt-5 font-heading text-2xl">Hackcorruption</h3>
+						<p class="mt-3 text-sm leading-6 text-muted">TODO: Add the verified project outcome and Figma prototype link.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="about" class="mx-auto max-w-5xl px-6 py-20 sm:px-10">
+			<p class="font-mono text-sm uppercase tracking-[0.18em] text-muted">About</p>
+			<h2 class="mt-4 font-heading text-4xl">A thoughtful engineer, still learning in public.</h2>
+			<p class="mt-6 max-w-2xl leading-8 text-muted">TODO: Add a concise professional biography based on the CV and personal direction.</p>
+		</section>
+
+		<section id="contact" class="border-t border-border">
+			<div class="mx-auto max-w-5xl px-6 py-20 sm:px-10">
+				<p class="font-mono text-sm uppercase tracking-[0.18em] text-muted">Contact</p>
+				<h2 class="mt-4 font-heading text-4xl">Let’s connect.</h2>
+				<p class="mt-6 max-w-xl leading-8 text-muted">TODO: Add verified email, LinkedIn, and GitHub links.</p>
+			</div>
 		</section>
 	</main>
 </BaseLayout>
