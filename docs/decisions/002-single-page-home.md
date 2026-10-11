@@ -18,11 +18,11 @@ Put the essential overview on the homepage:
 - Contact links
 - Footer
 
-Keep detailed project case studies under `/projects/[slug]` and the full resume under `/resume`.
+Keep detailed project pages under `/projects/[slug]` and the full resume under `/resume`.
 
 ## Consequences
 
 - Visitors can understand the portfolio from one page.
-- The homepage stays focused because deeper technical content remains on case-study pages.
+- The homepage stays focused because deeper technical content remains on project pages.
 - There are fewer top-level routes to maintain.
 - A project index can be added later if the number of projects grows substantially.

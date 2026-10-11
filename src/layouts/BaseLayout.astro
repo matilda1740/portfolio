@@ -9,8 +9,8 @@ interface Props {
 }
 
 const {
-	title = 'Your Name — Software Engineer',
-	description = 'A software engineer portfolio.',
+	title = 'Matilda Mwendwa Gitonga — Software Engineer',
+	description = 'The portfolio of Matilda Mwendwa Gitonga, a software engineer.',
 } = Astro.props;
 ---
 
@@ -20,7 +20,9 @@ const {
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="description" content={description} />
+		<meta name="author" content="Matilda Mwendwa Gitonga" />
 		<meta name="generator" content={Astro.generator} />
+		<link rel="icon" href="/images/icon.ico" type="image/x-icon" />
 		<script is:inline>
 			const savedTheme = localStorage.getItem('theme');
 			const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;

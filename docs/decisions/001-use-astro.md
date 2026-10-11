@@ -5,7 +5,7 @@
 
 ## Context
 
-The site is primarily static content: a homepage, project case studies, an HTML resume, and contact links. It does not require a backend, database, authentication, or a large client-side application.
+The site is primarily static content: a homepage, project pages, an HTML resume, and contact links. It does not require a backend, database, authentication, or a large client-side application.
 
 ## Decision
 

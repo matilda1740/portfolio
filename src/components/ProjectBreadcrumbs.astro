@@ -1,0 +1,15 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="text-sm text-muted">
+	<a class="hover:text-foreground" href="/">Home</a>
+	<span aria-hidden="true" class="px-2">/</span>
+	<a class="hover:text-foreground" href="/#work">Selected work</a>
+	<span aria-hidden="true" class="px-2">/</span>
+	<span aria-current="page">{title}</span>
+</nav>

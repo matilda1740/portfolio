@@ -52,6 +52,53 @@ body {
 	outline-offset: 3px;
 }
 
+.interactive-surface {
+	transition:
+		transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+		background-color 300ms ease,
+		border-color 300ms ease;
+}
+
+.interactive-surface:hover,
+.interactive-surface:focus-within {
+	background-color: color-mix(in srgb, var(--surface) 70%, transparent);
+	border-color: var(--border-strong);
+}
+
+.interactive-control {
+	transition:
+		transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+		background-color 300ms ease,
+		border-color 300ms ease,
+		color 300ms ease;
+}
+
+.interactive-control:hover,
+.interactive-control:focus-visible {
+	background-color: color-mix(in srgb, var(--surface) 70%, transparent);
+	border-color: var(--border-strong);
+}
+
+.interactive-control--accent {
+	background-color: var(--accent);
+	color: var(--on-accent);
+}
+
+.interactive-control--accent:hover,
+.interactive-control--accent:focus-visible {
+	background-color: var(--accent-hover);
+	color: var(--on-accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.interactive-surface:hover,
+	.interactive-surface:focus-within,
+	.interactive-control:hover,
+	.interactive-control:focus-visible {
+		transform: translateY(-2px);
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	*,
 	*::before,
