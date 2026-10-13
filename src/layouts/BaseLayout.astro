@@ -6,12 +6,21 @@ import Header from '../components/Header.astro';
 interface Props {
 	title?: string;
 	description?: string;
+	image?: string;
+	type?: 'website' | 'article';
+	noindex?: boolean;
 }
 
 const {
 	title = 'Matilda Mwendwa Gitonga — Software Engineer',
 	description = 'The portfolio of Matilda Mwendwa Gitonga, a software engineer.',
+	image = '/images/matilda-portrait.png',
+	type = 'website',
+	noindex = false,
 } = Astro.props;
+const siteUrl = Astro.site ?? new URL('https://www.matildagitonga.com');
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
+const socialImageUrl = new URL(image, siteUrl);
 ---
 
 <!doctype html>
@@ -22,12 +31,36 @@ const {
 		<meta name="description" content={description} />
 		<meta name="author" content="Matilda Mwendwa Gitonga" />
 		<meta name="generator" content={Astro.generator} />
-		<link rel="icon" href="/images/icon.ico" type="image/x-icon" />
+		<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+		<link rel="canonical" href={canonicalUrl} />
+		<meta property="og:type" content={type} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={socialImageUrl} />
+		<meta property="og:site_name" content="Matilda Mwendwa Gitonga" />
+		<meta property="og:locale" content="en_US" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={socialImageUrl} />
+		<link rel="icon" data-theme-favicon href="/images/icon-light.svg" type="image/svg+xml" />
+		<link rel="alternate icon" data-theme-fallback href="/images/icon-light.ico" type="image/x-icon" />
 		<script is:inline>
 			const savedTheme = localStorage.getItem('theme');
-			const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-			const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+			const theme = savedTheme || 'light';
 			document.documentElement.dataset.theme = theme;
+			const updateThemeAssets = () => {
+				const suffix = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+				document.querySelector('[data-theme-favicon]')?.setAttribute('href', `/images/icon-${suffix}.svg`);
+				document.querySelector('[data-theme-fallback]')?.setAttribute('href', `/images/icon-${suffix}.ico`);
+				document.querySelectorAll('[data-theme-asset]').forEach((asset) => {
+					asset.setAttribute('src', `/images/icon-${suffix}.svg`);
+				});
+			};
+			window.addEventListener('themechange', updateThemeAssets);
+			window.addEventListener('DOMContentLoaded', updateThemeAssets);
+			updateThemeAssets();
 		</script>
 		<title>{title}</title>
 	</head>

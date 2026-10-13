@@ -4,36 +4,121 @@
 @import '@fontsource/inter/500.css';
 @import '@fontsource/jetbrains-mono/400.css';
 
-:root {
-	--bg: #fffbf0;
-	--surface: #f7efe2;
-	--text: #53161d;
-	--text-muted: #7a4a50;
-	--border: #d9c9bd;
-	--border-strong: #bfa79c;
-	--accent: #53161d;
-	--accent-hover: #a8434f;
-	--accent-soft: #f0d9d3;
-	--on-accent: #fffbf0;
-	--focus: #a8434f;
-	--success: #3f6b45;
-	--error: #b3261e;
+:root,
+[data-theme='light'] {
+	color-scheme: light;
+	--color-page: #f3f5ee;
+	--color-page-alt: #eaf0e6;
+	--color-surface: #ffffff;
+	--color-surface-subtle: #e3ebdd;
+	--color-surface-raised: #ffffff;
+	--color-surface-selected: #d7eee7;
+	--color-surface-disabled: #e8ece7;
+	--color-overlay: rgb(20 58 52 / 58%);
+	--color-text-primary: #143a34;
+	--color-text-secondary: #526a63;
+	--color-text-tertiary: #526a63;
+	--color-text-placeholder: #687d75;
+	--color-text-inverse: #f5f0df;
+	--color-text-disabled: #687d75;
+	--color-brand: #143a34;
+	--color-action-primary: #087f70;
+	--color-action-hover: #066456;
+	--color-action-active: #054f45;
+	--color-action-text: #ffffff;
+	--color-action-soft: #d7eee7;
+	--color-action-border: #066456;
+	--color-link: #066456;
+	--color-blue: #315de8;
+	--color-blue-hover: #2348c0;
+	--color-blue-active: #1d3d9e;
+	--color-blue-text: #ffffff;
+	--color-blue-soft: #e1e7ff;
+	--color-blue-muted: #7893f0;
+	--color-border-subtle: #d5ded8;
+	--color-border: #b8c9bd;
+	--color-border-strong: #718e82;
+	--color-border-selected: #087f70;
+	--color-focus: #066456;
+	--color-success: #287044;
+	--color-success-soft: #e1f2e5;
+	--color-warning: #805b17;
+	--color-warning-soft: #f8eed5;
+	--color-error: #a32626;
+	--color-error-soft: #fbe7e5;
+	--color-info: #245985;
+	--color-info-soft: #dce8f2;
+	--color-highlight: #b9e5d7;
+	--color-earth: #a98558;
+	--color-shadow: rgb(20 58 52 / 10%);
 }
 
 [data-theme='dark'] {
-	--bg: #53161d;
-	--surface: #5f1f27;
-	--text: #fffbf0;
-	--text-muted: #e3c9c2;
-	--border: #8a4a52;
-	--border-strong: #a56a70;
-	--accent: #e8a5a0;
-	--accent-hover: #fffbf0;
-	--accent-soft: #7a2f39;
-	--on-accent: #53161d;
-	--focus: #e8a5a0;
-	--success: #8fc79a;
-	--error: #ff9e94;
+	color-scheme: dark;
+	--color-page: #102c29;
+	--color-page-alt: #132f2b;
+	--color-surface: #193b35;
+	--color-surface-subtle: #1d4038;
+	--color-surface-raised: #23483f;
+	--color-surface-selected: #2e5548;
+	--color-surface-disabled: #29423a;
+	--color-overlay: rgb(5 20 18 / 76%);
+	--color-text-primary: #f5f0df;
+	--color-text-secondary: #b6c9b5;
+	--color-text-tertiary: #b6c9b5;
+	--color-text-placeholder: #9cb2a4;
+	--color-text-inverse: #143a34;
+	--color-text-disabled: #9cb2a4;
+	--color-brand: #72d8c0;
+	--color-action-primary: #72d8c0;
+	--color-action-hover: #d8e8bd;
+	--color-action-active: #e4efd2;
+	--color-action-text: #102c29;
+	--color-action-soft: #2e5548;
+	--color-action-border: #6e9682;
+	--color-link: #b9dca7;
+	--color-blue: #8ea8ff;
+	--color-blue-hover: #b3c4ff;
+	--color-blue-active: #cdd7ff;
+	--color-blue-text: #111d2e;
+	--color-blue-soft: #293c67;
+	--color-blue-muted: #9fb3f7;
+	--color-border-subtle: #35584e;
+	--color-border: #44685d;
+	--color-border-strong: #6e9682;
+	--color-border-selected: #72d8c0;
+	--color-focus: #d8e8bd;
+	--color-success: #8fc79a;
+	--color-success-soft: #234b35;
+	--color-warning: #e5c17a;
+	--color-warning-soft: #493b23;
+	--color-error: #ff9e94;
+	--color-error-soft: #512b2a;
+	--color-info: #8fc1e8;
+	--color-info-soft: #243f55;
+	--color-highlight: #b9dca7;
+	--color-earth: #d0b17a;
+	--color-shadow: rgb(0 0 0 / 24%);
+}
+
+/* Compatibility aliases for existing component and Tailwind utility classes. */
+:root,
+[data-theme='light'],
+[data-theme='dark'] {
+	--bg: var(--color-page);
+	--surface: var(--color-surface);
+	--text: var(--color-text-primary);
+	--text-muted: var(--color-text-secondary);
+	--border: var(--color-border-subtle);
+	--border-strong: var(--color-border-strong);
+	--accent: var(--color-action-primary);
+	--accent-hover: var(--color-action-hover);
+	--accent-active: var(--color-action-active);
+	--accent-soft: var(--color-action-soft);
+	--on-accent: var(--color-action-text);
+	--focus: var(--color-focus);
+	--success: var(--color-success);
+	--error: var(--color-error);
 }
 
 html {

@@ -38,7 +38,12 @@ const primaryAction = project.data.githubUrl
 			: null;
 ---
 
-<BaseLayout title={`${project.data.title} — Matilda Gitonga`} description={project.data.summary}>
+<BaseLayout
+	title={`${project.data.title} — Matilda Gitonga`}
+	description={project.data.summary}
+	image={project.data.thumbnail ?? '/images/matilda-portrait.png'}
+	type="article"
+>
 	<main class="mx-auto max-w-7xl px-6 pt-8 pb-12 sm:px-12 sm:pt-10 sm:pb-16">
 		<div class="border-b border-border pb-5">
 			<ProjectBreadcrumbs title={project.data.title} />

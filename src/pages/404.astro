@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page not found — Matilda Gitonga" description="The page you were looking for could not be found." noindex>
+	<main>
+		<section class="border-b border-border">
+			<div class="mx-auto flex max-w-7xl items-center px-6 sm:px-10" style="min-height: calc(100vh - 12rem);">
+				<div class="max-w-2xl" style="margin-block: 6rem;">
+					<p class="font-mono text-sm uppercase tracking-[0.18em] text-accent">404 · Page not found</p>
+					<h1 class="mt-5 font-heading text-5xl leading-tight sm:text-7xl">This page went off the map.</h1>
+					<p class="mt-6 max-w-xl text-lg leading-8 text-muted">
+						The link may be outdated, or the page may have moved. You can return to the portfolio or explore the work from here.
+					</p>
+					<nav class="mt-10 flex flex-wrap gap-4" aria-label="Error page navigation">
+						<a class="interactive-control interactive-control--accent rounded-full px-5 py-3 text-sm font-medium" href="/">Back to homepage</a>
+					</nav>
+				</div>
+			</div>
+		</section>
+	</main>
+</BaseLayout>

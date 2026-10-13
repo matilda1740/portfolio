@@ -140,7 +140,7 @@ Machine-specific files such as personal settings, secrets, and local environment
 
 ## Documentation
 
-Important implementation decisions are recorded in [`docs/decisions/`](./docs/decisions/). The website project pages will document project outcomes for external readers, while this README documents the repository and development workflow.
+Important implementation decisions are recorded in [`docs/decisions/`](./docs/decisions/). The website project pages document project outcomes for external readers, while this README documents the repository and development workflow.
 
 ## Verification before publishing
 
@@ -151,6 +151,14 @@ Before sharing a deployment:
 3. Test keyboard navigation and the theme toggle.
 4. Check internal, GitHub, Figma, resume, and live-demo links.
 5. Review the Vercel preview deployment before promoting changes to production.
+
+## Remaining implementation work
+
+The core portfolio build and the current quality reviews are complete, including code cleanup, content review, dark-mode visual review, accessibility review, and final production-readiness verification. The remaining implementation-plan items are:
+
+1. **Enhance UI and UX elements** across the homepage, project pages, resume, and shared navigation. This pass should refine visual hierarchy, spacing rhythm, project-page image and sidebar balance, resume presentation, call-to-action clarity, interaction states, responsive behavior, and transition details without changing the approved content or color hierarchy.
+
+The UI/UX enhancement pass should be validated at representative mobile and desktop widths in both themes, with keyboard navigation and reduced-motion behavior rechecked after interaction changes.
 
 ## Suggested commit
 
