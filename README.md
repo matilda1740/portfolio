@@ -14,6 +14,10 @@ The current version includes:
 - A designed HTML resume page with a downloadable PDF.
 - Reusable components for layout sections, contact links, project actions, breadcrumbs, project navigation, and the layered hero.
 - Responsive mobile refinements for navigation controls, hero composition, project cards, and project pager alignment.
+- Forest/Jade/Cobalt semantic tokens with light and dark themes, theme-aware SVG and ICO assets, and a tested theme toggle.
+- A dedicated 404 page, consistent `max-w-7xl` page containers, and cleaned-up legacy favicon and palette-preview assets.
+- Production SEO foundations: canonical URLs, Open Graph and Twitter/X metadata, sitemap generation, `robots.txt`, a dedicated homepage social preview image, and project-specific social-image fallbacks.
+- Custom-domain production deployment at [www.matildagitonga.com](https://www.matildagitonga.com), with the apex domain permanently redirecting to `www`.
 - Static output suitable for Vercel deployment.
 
 The site is intentionally static and does not require a backend, database, authentication, or runtime API.
@@ -152,13 +156,27 @@ Before sharing a deployment:
 4. Check internal, GitHub, Figma, resume, and live-demo links.
 5. Review the Vercel preview deployment before promoting changes to production.
 
-## Remaining implementation work
+## Implementation status and remaining work
 
-The core portfolio build and the current quality reviews are complete, including code cleanup, content review, dark-mode visual review, accessibility review, and final production-readiness verification. The remaining implementation-plan items are:
+The core portfolio build and the current quality reviews are complete:
 
-1. **Enhance UI and UX elements** across the homepage, project pages, resume, and shared navigation. This pass should refine visual hierarchy, spacing rhythm, project-page image and sidebar balance, resume presentation, call-to-action clarity, interaction states, responsive behavior, and transition details without changing the approved content or color hierarchy.
+- Code and legacy-asset cleanup
+- Content accuracy review
+- Dark-mode visual review
+- Accessibility and keyboard-interaction review
+- Final production-readiness verification
+- Custom-domain deployment verification
+- Core SEO and social metadata implementation
 
-The UI/UX enhancement pass should be validated at representative mobile and desktop widths in both themes, with keyboard navigation and reduced-motion behavior rechecked after interaction changes.
+The remaining implementation-plan work is:
+
+1. **Enhance UI and UX elements** across the homepage, project pages, resume, and shared navigation. Refine visual hierarchy, spacing rhythm, project-page image and sidebar balance, resume presentation, call-to-action clarity, interaction states, responsive behavior, and transition details without changing the approved content or color hierarchy.
+2. Add validated JSON-LD structured data for the homepage identity, project pages, and project breadcrumbs.
+3. Validate and deploy the dedicated 1200×630 social preview image currently used by the default Open Graph and Twitter/X metadata.
+
+The UI/UX enhancement pass should be validated at representative mobile and desktop widths in both themes, with keyboard navigation and reduced-motion behavior rechecked after interaction changes. Structured-data output should be checked with a schema validator, and the social preview should be tested on representative link-preview tools.
+
+The current production URL is `https://www.matildagitonga.com`. If the domain changes in the future, update the `site` value in `astro.config.mjs` and the sitemap URL in `public/robots.txt`.
 
 ## Suggested commit
 
