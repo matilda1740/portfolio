@@ -1,25 +1,30 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
+import BrandLogo from './BrandLogo.astro';
+
+const isHomepage = Astro.url.pathname === '/';
+const isResume = Astro.url.pathname === '/resume';
+const isProject = Astro.url.pathname.startsWith('/projects/');
 ---
 
-<header class="border-b border-border">
-	<div class="mx-auto max-w-7xl px-6 py-5 sm:px-10">
+<header class="sticky top-0 z-50 site-header border-b border-border bg-background/95 backdrop-blur">
+	<div class="site-header-inner mx-auto max-w-7xl px-6 py-5 sm:px-10">
 		<div class="flex items-center justify-between gap-6">
-		<a href="/" class="inline-flex items-center gap-2 font-heading text-xl font-medium text-foreground">
-			<img src="/images/icon-light.svg" data-theme-asset alt="" aria-hidden="true" class="h-7 w-7 object-contain" />
+		<a href="/" class="site-brand inline-flex items-center gap-2 font-heading text-xl font-medium text-foreground">
+			<BrandLogo class="h-7 w-7 object-contain" />
 			<span>Matilda Gitonga</span>
 		</a>
-		<nav aria-label="Primary navigation" class="hidden items-center gap-6 text-sm sm:flex">
-			<a class="text-muted transition-colors hover:text-foreground" href="/#work">Work</a>
-			<a class="text-muted transition-colors hover:text-foreground" href="/#about">About</a>
-			<a class="text-muted transition-colors hover:text-foreground" href="/resume">Resume</a>
-			<a class="text-muted transition-colors hover:text-foreground" href="/#contact">Contact</a>
+		<nav aria-label="Primary navigation" class="site-nav hidden items-center gap-6 text-sm sm:flex">
+			<a class="site-nav-link text-muted hover:text-foreground" data-nav-section={isHomepage ? 'work' : undefined} aria-current={isProject ? 'page' : undefined} href="/#work">Work</a>
+			<a class="site-nav-link text-muted hover:text-foreground" data-nav-section="about" href="/#about">About</a>
+			<a class="site-nav-link text-muted hover:text-foreground" data-nav-section="contact" href="/#contact">Contact</a>
+			<a class="site-nav-link text-muted hover:text-foreground" aria-current={isResume ? 'page' : undefined} href="/resume">Resume</a>
 		</nav>
 			<div class="flex items-center gap-3">
 				<ThemeToggle />
 				<button
 					type="button"
-					class="interactive-control inline-flex items-center rounded-full border border-border px-2.5 py-2 text-sm text-foreground sm:hidden"
+					class="site-menu-toggle interactive-control inline-flex items-center rounded-lg border border-border px-2.5 py-2 text-sm text-foreground sm:hidden"
 					data-menu-toggle
 					aria-expanded="false"
 					aria-controls="mobile-navigation"
@@ -34,12 +39,12 @@ import ThemeToggle from './ThemeToggle.astro';
 				</button>
 			</div>
 		</div>
-		<nav id="mobile-navigation" aria-label="Mobile navigation" class="mt-4 hidden border-t border-border pt-4 sm:hidden">
-			<div class="flex flex-col gap-4 text-sm">
-				<a class="text-muted" href="/#work">Work</a>
-				<a class="text-muted" href="/#about">About</a>
-				<a class="text-muted" href="/resume">Resume</a>
-				<a class="text-muted" href="/#contact">Contact</a>
+		<nav id="mobile-navigation" aria-label="Mobile navigation" class="site-mobile-nav mt-4 hidden border-t border-border pt-4 sm:hidden">
+			<div class="site-mobile-nav-links flex flex-col gap-4 text-sm">
+				<a class="site-nav-link text-muted" data-nav-section={isHomepage ? 'work' : undefined} aria-current={isProject ? 'page' : undefined} href="/#work">Work</a>
+				<a class="site-nav-link text-muted" data-nav-section="about" href="/#about">About</a>
+				<a class="site-nav-link text-muted" data-nav-section="contact" href="/#contact">Contact</a>
+				<a class="site-nav-link text-muted" aria-current={isResume ? 'page' : undefined} href="/resume">Resume</a>
 			</div>
 		</nav>
 	</div>
@@ -48,23 +53,104 @@ import ThemeToggle from './ThemeToggle.astro';
 <script>
 	const menuToggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
 	const mobileNavigation = document.querySelector<HTMLElement>('#mobile-navigation');
+	const mobileLinks = Array.from(mobileNavigation?.querySelectorAll<HTMLAnchorElement>('a') ?? []);
+	const sectionLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-nav-section]'));
+	const sections = sectionLinks
+		.map((link) => document.getElementById(link.dataset.navSection ?? ''))
+		.filter((section): section is HTMLElement => Boolean(section));
+
+	const updateActiveSection = (activeId?: string) => {
+		sectionLinks.forEach((link) => {
+			const isActive = link.dataset.navSection === activeId;
+			if (isActive) {
+				link.setAttribute('aria-current', 'location');
+			} else {
+				if (link.dataset.navSection) link.removeAttribute('aria-current');
+			}
+		});
+	};
+
+	if (sections.length > 0 && 'IntersectionObserver' in window) {
+		const sectionVisibility = new Map<Element, IntersectionObserverEntry>();
+		const sectionObserver = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => sectionVisibility.set(entry.target, entry));
+
+				const visibleSection = Array.from(sectionVisibility.values())
+					.filter((entry) => entry.isIntersecting)
+					.sort((a, b) => {
+						if (b.intersectionRatio !== a.intersectionRatio) {
+							return b.intersectionRatio - a.intersectionRatio;
+						}
+						return a.boundingClientRect.top - b.boundingClientRect.top;
+					})[0];
+				if (visibleSection) updateActiveSection(visibleSection.target.id);
+			},
+			{ rootMargin: '-20% 0px -55% 0px', threshold: [0, 0.25, 0.5, 0.75] },
+		);
+		sections.forEach((section) => sectionObserver.observe(section));
+	}
+
+	const closeMenu = (restoreFocus = false) => {
+		if (!menuToggle || !mobileNavigation) return;
+		menuToggle.setAttribute('aria-expanded', 'false');
+		menuToggle.setAttribute('aria-label', 'Open menu');
+		mobileNavigation.classList.add('hidden');
+		menuToggle.querySelector('.menu-bars')?.classList.remove('hidden');
+		menuToggle.querySelector('.menu-close')?.classList.add('hidden');
+		document.body.style.overflow = '';
+		if (restoreFocus) menuToggle.focus();
+	};
+
+	const openMenu = () => {
+		if (!menuToggle || !mobileNavigation) return;
+		menuToggle.setAttribute('aria-expanded', 'true');
+		menuToggle.setAttribute('aria-label', 'Close menu');
+		mobileNavigation.classList.remove('hidden');
+		menuToggle.querySelector('.menu-bars')?.classList.add('hidden');
+		menuToggle.querySelector('.menu-close')?.classList.remove('hidden');
+		document.body.style.overflow = 'hidden';
+		mobileLinks[0]?.focus();
+	};
 
 	menuToggle?.addEventListener('click', () => {
 		const isOpen = menuToggle.getAttribute('aria-expanded') === 'true';
-		menuToggle.setAttribute('aria-expanded', String(!isOpen));
-		menuToggle.setAttribute('aria-label', isOpen ? 'Open menu' : 'Close menu');
-		mobileNavigation?.classList.toggle('hidden', isOpen);
-		menuToggle.querySelector('.menu-bars')?.classList.toggle('hidden', !isOpen);
-		menuToggle.querySelector('.menu-close')?.classList.toggle('hidden', isOpen);
+		if (isOpen) closeMenu(true);
+		else openMenu();
 	});
 
-	mobileNavigation?.querySelectorAll('a').forEach((link) => {
+	mobileLinks.forEach((link) => {
 		link.addEventListener('click', () => {
 			menuToggle?.setAttribute('aria-expanded', 'false');
 			menuToggle?.setAttribute('aria-label', 'Open menu');
-			mobileNavigation.classList.add('hidden');
+			mobileNavigation?.classList.add('hidden');
 			menuToggle?.querySelector('.menu-bars')?.classList.remove('hidden');
 			menuToggle?.querySelector('.menu-close')?.classList.add('hidden');
+			document.body.style.overflow = '';
 		});
+	});
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape' && menuToggle?.getAttribute('aria-expanded') === 'true') {
+			closeMenu(true);
+			return;
+		}
+		if (event.key !== 'Tab' || menuToggle?.getAttribute('aria-expanded') !== 'true' || mobileLinks.length === 0) return;
+		const firstLink = mobileLinks[0];
+		const lastLink = mobileLinks[mobileLinks.length - 1];
+		if (event.shiftKey && document.activeElement === firstLink) {
+			event.preventDefault();
+			lastLink.focus();
+		} else if (!event.shiftKey && document.activeElement === lastLink) {
+			event.preventDefault();
+			firstLink.focus();
+		}
+	});
+
+	document.addEventListener('click', (event) => {
+		if (menuToggle?.getAttribute('aria-expanded') !== 'true') return;
+		if (event.target instanceof Node && !mobileNavigation?.contains(event.target) && !menuToggle.contains(event.target)) {
+			closeMenu();
+		}
 	});
 </script>

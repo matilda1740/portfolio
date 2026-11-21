@@ -1,0 +1,132 @@
+---
+interface SectionHeading {
+	depth: number;
+	slug: string;
+	text: string;
+}
+
+interface Props {
+	headings: SectionHeading[];
+}
+
+const { headings } = Astro.props;
+---
+
+{headings.length > 1 && <nav class="project-section-index" aria-label="On this page">
+	<div class="project-section-index-inner">
+		<div class="project-section-index-track" aria-hidden="true">
+			<span data-section-progress></span>
+		</div>
+		<div>
+			<div class="project-section-index-heading">
+				<p>Contents</p>
+				<span data-section-count>01 / {String(headings.length).padStart(2, '0')}</span>
+			</div>
+			<ol class="project-section-index-list mt-4 text-xs">
+				{headings.map((heading, index) => <li>
+					<a class="project-section-index-link text-muted hover:text-foreground" data-section-index={index} href={`#${heading.slug}`}>
+						<span class="project-section-index-number">{String(index + 1).padStart(2, '0')}</span>
+						<span>{heading.text}</span>
+					</a>
+				</li>)}
+			</ol>
+		</div>
+	</div>
+</nav>}
+
+<script>
+	const sectionIndex = document.querySelector<HTMLElement>('.project-section-index');
+	const links = Array.from(sectionIndex?.querySelectorAll<HTMLAnchorElement>('[data-section-index]') ?? []);
+	const progress = sectionIndex?.querySelector<HTMLElement>('[data-section-progress]');
+	const sectionCount = sectionIndex?.querySelector<HTMLElement>('[data-section-count]');
+	const sections = links
+		.map((link) => document.getElementById(link.hash.slice(1)))
+		.filter((section): section is HTMLElement => Boolean(section));
+
+	const setActiveSection = (index: number) => {
+		links.forEach((link, linkIndex) => {
+			if (linkIndex === index) {
+				link.setAttribute('aria-current', 'location');
+				link.classList.add('is-active');
+			} else {
+				link.removeAttribute('aria-current');
+				link.classList.remove('is-active');
+			}
+		});
+		if (progress) progress.style.height = `${((index + 1) / links.length) * 100}%`;
+		if (sectionCount) sectionCount.textContent = `${String(index + 1).padStart(2, '0')} / ${String(links.length).padStart(2, '0')}`;
+	};
+
+	if (sections.length > 0) {
+		setActiveSection(0);
+
+		let ticking = false;
+		let lockedIndex: number | null = null;
+		let hashNavigationIndex: number | null = null;
+		let unlockTimer: number | undefined;
+
+		const lockActiveSection = (index: number) => {
+			lockedIndex = index;
+			hashNavigationIndex = index;
+			setActiveSection(index);
+			if (unlockTimer) window.clearTimeout(unlockTimer);
+			unlockTimer = window.setTimeout(() => {
+				lockedIndex = null;
+				requestScrollUpdate();
+			}, 1200);
+		};
+
+		const updateActiveFromScroll = () => {
+			ticking = false;
+			if (lockedIndex !== null) return;
+			if (hashNavigationIndex !== null) {
+				setActiveSection(hashNavigationIndex);
+				return;
+			}
+			const header = document.querySelector<HTMLElement>('.site-header');
+			const readingLine = (header?.getBoundingClientRect().height ?? 79) + 32;
+
+			let activeIndex = 0;
+			sections.forEach((section, index) => {
+				if (section.getBoundingClientRect().top <= readingLine) activeIndex = index;
+			});
+
+			const atPageBottom =
+				window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8;
+			if (atPageBottom) activeIndex = sections.length - 1;
+
+			setActiveSection(activeIndex);
+		};
+
+		const requestScrollUpdate = () => {
+			if (ticking) return;
+			ticking = true;
+			window.requestAnimationFrame(updateActiveFromScroll);
+		};
+
+		links.forEach((link, index) => {
+			link.addEventListener('click', () => lockActiveSection(index));
+		});
+
+		window.addEventListener('scroll', requestScrollUpdate, { passive: true });
+		window.addEventListener('resize', requestScrollUpdate);
+		window.addEventListener('wheel', () => {
+			hashNavigationIndex = null;
+		}, { passive: true });
+		window.addEventListener('touchstart', () => {
+			hashNavigationIndex = null;
+		}, { passive: true });
+		window.addEventListener('keydown', (event) => {
+			if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) {
+				hashNavigationIndex = null;
+			}
+		});
+
+		const currentHashIndex = sections.findIndex((section) => `#${section.id}` === window.location.hash);
+		if (currentHashIndex >= 0) {
+			lockActiveSection(currentHashIndex);
+		} else {
+			updateActiveFromScroll();
+		}
+	}
+</script>

@@ -1,18 +1,37 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactLinks from '../components/ContactLinks.astro';
+import ContactCollage from '../components/ContactCollage.astro';
 import LayeredPortraitHero from '../components/LayeredPortraitHero.astro';
 import Section from '../components/Section.astro';
 import { getCollection } from 'astro:content';
 
 const projects = (await getCollection('projects', ({ data }) => data.published && data.featured))
 	.sort((a, b) => (a.data.sortOrder ?? Number.MAX_SAFE_INTEGER) - (b.data.sortOrder ?? Number.MAX_SAFE_INTEGER));
+
+const personStructuredData = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	name: 'Matilda Mwendwa Gitonga',
+	url: 'https://www.matildagitonga.com/',
+	jobTitle: 'Software Engineer',
+	address: {
+		'@type': 'PostalAddress',
+		addressLocality: 'Nairobi',
+		addressCountry: 'KE',
+	},
+	sameAs: [
+		'https://github.com/matilda1740',
+		'https://www.linkedin.com/in/matilda-mwendwa-gitonga-235035212/',
+	],
+};
 ---
 
-<BaseLayout>
+<BaseLayout title="Matilda Gitonga — Portfolio" structuredData={personStructuredData}>
 	<main>
-		<Section innerClass="pb-14 pt-12 sm:pb-24 sm:pt-20">
-			<div class="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.72fr)] lg:gap-20">
+		<Section class="section-hero" innerClass="pb-8 pt-12 sm:pb-16 sm:pt-16">
+			<div class="grid items-center gap-8 min-[900px]:grid-cols-[minmax(0,1fr)_minmax(20rem,0.72fr)] lg:gap-20">
 				<div>
 					<p class="mb-6 font-mono text-sm uppercase tracking-[0.18em] text-muted">Software engineer</p>
 					<h1 class="max-w-3xl font-heading text-4xl leading-tight sm:text-5xl">From messy data to dependable software.</h1>
@@ -23,7 +42,7 @@ const projects = (await getCollection('projects', ({ data }) => data.published &
 						I build dependable software across applied AI, data-driven research, and web systems.
 					</p>
 					<div class="mt-10 flex flex-wrap gap-4">
-						<a class="interactive-control interactive-control--accent rounded-full px-5 py-3 text-sm font-medium" href="#work">View selected work</a>
+						<a class="interactive-control interactive-control--accent rounded-full px-5 py-3 text-sm font-medium" href="#work">View selected work <span aria-hidden="true">↓</span></a>
 						<a class="interactive-control rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground" href="/resume">View resume</a>
 					</div>
 				</div>
@@ -31,30 +50,48 @@ const projects = (await getCollection('projects', ({ data }) => data.published &
 			</div>
 		</Section>
 
-		<Section id="work" borderTop innerClass="py-14 sm:py-20">
+		<Section id="work" class="section-work" innerClass="pb-14 pt-12 sm:pb-20 sm:pt-16">
 				<p class="font-mono text-sm uppercase tracking-[0.18em] text-muted">Selected work</p>
 				<h2 class="mt-4 max-w-2xl font-heading text-4xl">Different problems.<br />Same standard.</h2>
 				<p class="mt-4 max-w-2xl leading-8 text-muted">Research, engineering, and design in practice. I get to the root of a problem, then build it well. Select a project to see how it came together.</p>
-				<div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+				<div class="mt-6 grid gap-6 md:gap-10 md:grid-cols-2 lg:grid-cols-3">
 					{projects.map((project, index) => (
-						<article class="interactive-surface group overflow-hidden rounded-2xl border border-border bg-surface">
-							<a class="flex h-full flex-col" href={`/projects/${project.id}`} aria-label={`View ${project.data.title} project`}>
+						<article class="project-card interactive-surface group overflow-hidden rounded-2xl border border-border bg-surface">
+							<a class="flex h-full flex-col" href={`/projects/${project.id}`}>
 								{project.data.thumbnail && (
-									<div class="aspect-[16/10] overflow-hidden border-b border-border bg-bg sm:aspect-[4/3]">
-										<img
-											src={project.data.thumbnail}
+									<div
+										class="project-image-frame aspect-[16/8] overflow-hidden border-b border-border bg-bg"
+										data-project-image-frame
+									>
+										<Image
+											src={project.data.thumbnail.replace('-hero.png', '-card.png')}
 											alt={project.data.thumbnailAlt ?? `${project.data.title} preview`}
-											class="h-full w-full object-cover"
+											class="project-image h-full w-full object-cover"
+											data-project-image
+											width={1600}
+											height={800}
 											loading="lazy"
 											decoding="async"
 										/>
 									</div>
 								)}
-								<div class="flex flex-1 flex-col p-6">
-									<p class="font-mono text-xs uppercase tracking-[0.08em] text-muted">{String(index + 1).padStart(2, '0')} · {project.data.category} · {project.data.year}</p>
-									<h3 class="mt-5 font-heading text-2xl">{project.data.title}</h3>
-									<p class="mt-3 text-sm leading-6 text-muted">{project.data.summary}</p>
-									<span class="mt-6 text-sm font-medium text-accent underline underline-offset-4 transition-colors group-hover:text-accent-hover group-focus-visible:text-accent-hover">View project →</span>
+								<div class="project-card-content flex flex-1 flex-col p-5 sm:p-6">
+									<div class="project-card-heading">
+										<h3 class="project-card-title font-heading text-2xl">{project.data.title}</h3>
+										<span class="project-card-mobile-meta" aria-label={`${project.data.category}, ${project.data.year}`}>{project.data.category} · {project.data.year}</span>
+									</div>
+									<p class="project-summary mt-3 text-sm leading-6 text-muted">{project.data.summary}</p>
+									<ul class="project-card-tags mt-4 flex flex-wrap gap-1.5" aria-label={`${project.data.title} technologies`}>
+										{project.data.tags.map((tag, tagIndex) => (
+											<li
+												class="project-card-tag"
+												data-tag-index={tagIndex}
+												data-tag-tone={tagIndex % 3}
+											>{tag}</li>
+										))}
+									</ul>
+									<p class="project-card-meta mt-5 font-mono text-xs uppercase tracking-[0.08em] text-muted">{String(index + 1).padStart(2, '0')} · {project.data.category} · {project.data.year}</p>
+									<span class="project-card-cta mt-auto pt-5 text-sm font-medium text-accent underline underline-offset-4 transition-colors group-hover:text-accent-hover group-focus-visible:text-accent-hover">View project <span aria-hidden="true">→</span></span>
 								</div>
 							</a>
 						</article>
@@ -62,13 +99,30 @@ const projects = (await getCollection('projects', ({ data }) => data.published &
 				</div>
 		</Section>
 
-		<Section id="about" innerClass="py-14 sm:py-20">
-			<div class="grid gap-8 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-16">
+		<Section id="about" class="section-about" innerClass="pb-14 pt-12 sm:pb-20 sm:pt-16">
+			<div class="grid gap-8 md:grid-cols-[minmax(0,0.65fr)_minmax(0,1.35fr)] md:gap-10 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-16">
 				<div>
 					<p class="font-mono text-sm uppercase tracking-[0.18em] text-muted">About</p>
-					<h2 class="mt-4 font-heading text-4xl">Curious by habit,<br />practical by training.</h2>
+					<h2 class="mt-4 max-w-md font-heading text-4xl leading-tight">Curious by habit,<br />practical by training.</h2>
+					<ol class="about-process mt-10" aria-label="Engineering process">
+						<li class="about-process-card about-process-card--active">
+							<span class="about-process-number">01</span>
+							<span class="about-process-label">Investigate</span>
+							<span class="about-process-detail">Find the signal in complexity.</span>
+						</li>
+						<li class="about-process-card">
+							<span class="about-process-number">02</span>
+							<span class="about-process-label">Build</span>
+							<span class="about-process-detail">Turn insight into useful software.</span>
+						</li>
+						<li class="about-process-card about-process-card--technical">
+							<span class="about-process-number">03</span>
+							<span class="about-process-label">Refine</span>
+							<span class="about-process-detail">Test, improve, and make it last.</span>
+						</li>
+					</ol>
 				</div>
-				<div class="space-y-5 leading-8 text-muted">
+				<div class="max-w-2xl space-y-5 leading-8 text-muted">
 					<p>I’m drawn to problems where the useful answer is hidden inside a complex system.</p>
 					<p>I’m a software engineer based in Nairobi with a First Class Honours degree in Informatics and Computer Science from Strathmore University. My work spans software engineering, applied AI, data analysis, and cybersecurity, from optimizing databases at Microsoft and assessing vulnerabilities at the Communications Authority of Kenya to reconstructing service relationships from application logs and building reliable workflows for an online storefront.</p>
 					<p>I enjoy moving between investigation and implementation: testing an approach, learning from what it reveals, and turning the result into software that people can use.</p>
@@ -76,13 +130,74 @@ const projects = (await getCollection('projects', ({ data }) => data.published &
 			</div>
 		</Section>
 
-		<Section id="contact" borderTop innerClass="py-14 sm:py-20">
-				<p class="font-mono text-sm uppercase tracking-[0.18em] text-muted">Contact</p>
-				<h2 class="mt-4 font-heading text-4xl">Let’s talk.</h2>
-				<p class="mt-6 max-w-xl leading-8 text-muted">I’m open to engineering roles, research collaborations, and conversations about applied AI and data-driven products. If you’re working on something where the data is complicated and the software needs to be dependable, I’d like to hear about it.</p>
-				<div class="mt-8">
-					<ContactLinks />
+		<Section id="contact" class="section-contact" innerClass="pb-10 pt-12 sm:pb-14 sm:pt-16">
+				<div class="contact-layout grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.72fr)] lg:gap-12">
+					<div class="contact-copy">
+						<p class="font-mono text-sm uppercase tracking-[0.18em] text-muted">Contact</p>
+						<h2 class="contact-heading mt-4 font-heading text-4xl leading-tight sm:text-5xl">Bring me the complicated bit.</h2>
+						<p class="section-muted contact-intro mt-6 max-w-xl leading-8">I enjoy getting to the root of difficult problems and turning what I learn into useful software.</p>
+						<div class="mt-8">
+							<ContactLinks />
+						</div>
+					</div>
+					<ContactCollage />
 				</div>
 		</Section>
 	</main>
+	<script>
+		const tagLists = Array.from(document.querySelectorAll<HTMLElement>('.project-card-tags'));
+
+		const updateTagPreview = (list: HTMLElement) => {
+			const tags = Array.from(list.querySelectorAll<HTMLElement>('.project-card-tag'));
+			tags.forEach((tag) => tag.classList.remove('is-tag-preview-hidden'));
+
+			const maxRows = window.innerWidth < 768 ? 1 : 2;
+			const firstTop = tags[0]?.getBoundingClientRect().top;
+			if (firstTop == null) return;
+
+			const rowTops: number[] = [];
+			tags.forEach((tag) => {
+				const tagTop = tag.getBoundingClientRect().top;
+				const existingRow = rowTops.find((top) => Math.abs(top - tagTop) <= 2);
+				if (existingRow == null) rowTops.push(tagTop);
+			});
+
+			if (rowTops.length <= maxRows) return;
+
+			const allowedRows = new Set(rowTops.slice(0, maxRows));
+			tags.forEach((tag) => {
+				const tagTop = tag.getBoundingClientRect().top;
+				const allowed = Array.from(allowedRows).some((top) => Math.abs(top - tagTop) <= 2);
+				tag.classList.toggle('is-tag-preview-hidden', !allowed);
+			});
+		};
+
+		tagLists.forEach((list) => {
+			if ('ResizeObserver' in window) {
+				const observer = new ResizeObserver(() => updateTagPreview(list));
+				observer.observe(list);
+			} else {
+				updateTagPreview(list);
+			}
+		});
+
+		window.addEventListener('resize', () => tagLists.forEach(updateTagPreview));
+	</script>
 </BaseLayout>
+
+<script>
+	const projectImages = Array.from(document.querySelectorAll<HTMLImageElement>('[data-project-image]'));
+	projectImages.forEach((image) => {
+		const frame = image.closest<HTMLElement>('[data-project-image-frame]');
+		const markLoaded = () => frame?.setAttribute('data-image-state', 'loaded');
+		const markFailed = () => frame?.setAttribute('data-image-state', 'error');
+
+		if (image.complete) {
+			if (image.naturalWidth > 0) markLoaded();
+			else markFailed();
+		} else {
+			image.addEventListener('load', markLoaded, { once: true });
+			image.addEventListener('error', markFailed, { once: true });
+		}
+	});
+</script>

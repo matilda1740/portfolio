@@ -1,22 +1,17 @@
 ---
 title: Shades of Ruth
 summary: "A responsive beauty e-commerce storefront with product discovery, checkout, and an administration dashboard."
-outcome: "Delivered a responsive storefront covering product discovery, shopping flows, account features, and administration."
+outcome: "Delivered a working responsive storefront with customer shopping flows and an administration dashboard."
 year: 2022
 category: engineering
 tags:
   - React
   - Firebase
-  - Redux Toolkit
-  - Material UI
-  - E-commerce
-highlights:
-  - value: "React"
-    label: "customer storefront"
-  - value: "Firebase"
-    label: "auth, data, and storage"
-  - value: "Admin"
-    label: "products and orders"
+  - Redux
+  - SCSS
+  - MaterialUI
+  - Styled Components
+
 published: true
 featured: true
 sortOrder: 2
@@ -24,8 +19,10 @@ role: Software Developer
 organization: Shades of Ruth
 githubUrl: https://github.com/matilda1740/shades-of-ruth
 demoUrl: https://shadesofruthbackend.web.app/
-thumbnail: /images/projects/shades-of-ruth-storefront.png
+thumbnail: /images/projects/shades-of-ruth-card.png
 thumbnailAlt: "Shades of Ruth storefront homepage featuring an eye-shadow collection and responsive beauty e-commerce navigation."
+thumbnailWidth: 1600
+thumbnailHeight: 800
 ---
 
 ## The problem
@@ -36,11 +33,10 @@ Shades of Ruth is a responsive React e-commerce storefront for beauty products. 
 
 Customers can browse the catalogue, filter products by category, save items to a wishlist, manage a cart, and complete a structured checkout flow. The interface is designed to work across mobile, tablet, and desktop layouts.
 
-![Shades of Ruth product catalogue showing category navigation, lipstick listings, product prices, descriptions, wishlist controls, and cart actions.](/images/projects/shades-of-ruth-catalogue.png)
-
-## My role
-
-I developed and enhanced the application end to end, implementing the storefront experience, persistent cart and wishlist state, account flows, and the administrative interface for product and order management.
+<figure class="project-evidence project-evidence--interface">
+  <img src="/images/projects/shades-of-ruth-catalogue.png" alt="Shades of Ruth product catalogue showing category navigation, lipstick listings, product prices, descriptions, wishlist controls, and cart actions." width="1406" height="768" loading="lazy" decoding="async" />
+  <figcaption>Shades of Ruth customer catalogue — category navigation, product discovery, wishlist and cart controls.</figcaption>
+</figure>
 
 ## How it works
 
@@ -50,12 +46,4 @@ Firebase provides Authentication, Firestore persistence, Storage for product ima
 
 ## What changed
 
-The result is a working responsive storefront with product discovery, category routes, wishlist and cart flows, checkout validation, authentication screens, customer accounts, and a management dashboard. A live deployment and the source repository are available for review.
-
-## Constraints and lessons
-
-The repository describes the Firebase rules as permissive for local/demo usage and identifies payment integration, testing, TypeScript migration, SEO, and performance work as future improvements. These limitations should be addressed before treating the application as a production commerce platform.
-
-## Next steps
-
-I would tighten Firebase security rules, add automated unit and integration coverage, migrate the application to TypeScript, integrate a dedicated payment gateway, and improve SEO and performance before a production launch.
+The implementation unifies product discovery, checkout, authentication and administration in one React and Firebase application. A live deployment and the source repository are available for review.

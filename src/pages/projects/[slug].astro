@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectActions from '../../components/ProjectActions.astro';
 import ProjectBreadcrumbs from '../../components/ProjectBreadcrumbs.astro';
 import ProjectPager from '../../components/ProjectPager.astro';
+import ProjectSectionIndex from '../../components/ProjectSectionIndex.astro';
 
 export async function getStaticPaths() {
 	const projects = (await getCollection('projects', ({ data }) => data.published))
@@ -16,7 +17,8 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { Content } = await render(project);
+const { Content, headings } = await render(project);
+const sectionHeadings = headings.filter(({ depth }) => depth === 2);
 const projects = (await getCollection('projects', ({ data }) => data.published))
 	.sort((a, b) => (a.data.sortOrder ?? Number.MAX_SAFE_INTEGER) - (b.data.sortOrder ?? Number.MAX_SAFE_INTEGER));
 const projectIndex = projects.findIndex((entry) => entry.id === project.id);
@@ -29,92 +31,110 @@ const projectActions = [
 	project.data.paperUrl && { label: 'Read paper ↗', href: project.data.paperUrl },
 	project.data.externalUrl && { label: 'View project ↗', href: project.data.externalUrl },
 ].filter((action): action is { label: string; href: string; emphasis?: 'primary' | 'secondary' } => Boolean(action));
-const primaryAction = project.data.githubUrl
-	? { label: 'View source ↗', href: project.data.githubUrl, emphasis: 'primary' as const }
-	: project.data.demoUrl
-		? { label: 'Try live demo ↗', href: project.data.demoUrl, emphasis: 'primary' as const }
-		: project.data.figmaUrl
-			? { label: 'View prototype ↗', href: project.data.figmaUrl, emphasis: 'primary' as const }
-			: null;
+const siteUrl = Astro.site ?? new URL('https://www.matildagitonga.com');
+const projectUrl = new URL(`/projects/${project.id}/`, siteUrl).toString();
+const projectImageUrl = new URL(project.data.thumbnail ?? '/images/matilda-portrait.png', siteUrl).toString();
+const projectStructuredData = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'CreativeWork',
+		name: project.data.title,
+		description: project.data.summary,
+		url: projectUrl,
+		image: projectImageUrl,
+		creator: {
+			'@type': 'Person',
+			name: 'Matilda Mwendwa Gitonga',
+			url: 'https://www.matildagitonga.com/',
+		},
+		keywords: project.data.tags.join(', '),
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{
+				'@type': 'ListItem',
+				position: 1,
+				name: 'Home',
+				item: 'https://www.matildagitonga.com/',
+			},
+			{
+				'@type': 'ListItem',
+				position: 2,
+				name: 'Selected work',
+				item: 'https://www.matildagitonga.com/#work',
+			},
+			{
+				'@type': 'ListItem',
+				position: 3,
+				name: project.data.title,
+				item: projectUrl,
+			},
+		],
+	},
+];
 ---
 
 <BaseLayout
-	title={`${project.data.title} — Matilda Gitonga`}
+	title={`Matilda Gitonga — ${project.data.title}`}
 	description={project.data.summary}
 	image={project.data.thumbnail ?? '/images/matilda-portrait.png'}
 	type="article"
+	structuredData={projectStructuredData}
 >
-	<main class="mx-auto max-w-7xl px-6 pt-8 pb-12 sm:px-12 sm:pt-10 sm:pb-16">
-		<div class="border-b border-border pb-5">
+	<main class="mx-auto max-w-7xl px-6 pt-6 pb-10 sm:px-12 sm:pt-8 sm:pb-12">
+		<div class="project-orientation border-b border-border pb-4">
 			<ProjectBreadcrumbs title={project.data.title} />
 			<ProjectPager previous={previousProject && { id: previousProject.id, title: previousProject.data.title }} next={nextProject && { id: nextProject.id, title: nextProject.data.title }} />
 		</div>
 
-		<div class="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-16">
+		<div class="project-page-layout mt-5">
 			<div>
-				<header class="pb-8">
-					<p class="font-mono text-sm uppercase tracking-[0.18em] text-muted">{project.data.category} · {project.data.year}</p>
-					<h1 class="mt-5 font-heading text-5xl leading-tight sm:text-6xl">{project.data.title}</h1>
-					<p class="mt-6 max-w-3xl text-lg leading-8 text-muted">{project.data.summary}</p>
-					{project.data.thumbnail && <figure class="mt-8 overflow-hidden rounded-2xl border border-border bg-surface">
-						<img src={project.data.thumbnail} alt={project.data.thumbnailAlt ?? `${project.data.title} preview`} class="h-auto w-full" loading="eager" decoding="async" />
-					</figure>}
-					<p class="mt-6 max-w-3xl border-l-2 border-accent pl-4 text-base leading-7 text-foreground">{project.data.outcome}</p>
-					<div class="mt-7">
-						<ProjectActions actions={projectActions} />
+				<header class="project-intro pb-6">
+					<div class="project-intro-heading">
+						<div class="project-intro-title-group">
+							<h1 class="font-heading text-2xl leading-tight sm:text-4xl">{project.data.title}</h1>
+							<p class="project-intro-meta">
+								<span>{project.data.category}</span>
+								<span aria-hidden="true">·</span>
+								<span>{project.data.year}</span>
+							</p>
+						</div>
+						<div class="project-intro-actions">
+							<ProjectActions actions={projectActions} />
+						</div>
+					</div>
+					<p class="project-intro-summary mt-4 text-lg leading-8 text-muted">{project.data.summary}</p>
+					{(project.data.role || project.data.organization) && <dl class="project-intro-context mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+						{project.data.role && <div>
+							<dt>Role</dt>
+							<dd>{project.data.role}</dd>
+						</div>}
+						{project.data.organization && <div>
+							<dt>Organization</dt>
+							<dd>{project.data.organization}</dd>
+						</div>}
+					</dl>}
+					<div class="project-intro-media mt-4">
+						{project.data.thumbnail && <figure class="project-intro-image">
+							<img src={project.data.thumbnail} alt={project.data.thumbnailAlt ?? `${project.data.title} preview`} class="h-auto w-full" loading="eager" decoding="async" />
+						</figure>}
+						<aside class="project-intro-outcome rounded-xl border-l-2 border-accent px-3 py-2 text-sm leading-6 text-foreground">
+							<p class="project-intro-outcome-label">Outcome</p>
+							<p>{project.data.outcome}</p>
+						</aside>
 					</div>
 				</header>
 
-				{project.data.highlights.length > 0 && <section aria-labelledby="highlights-title" class:list={[
-					'grid gap-3 py-8',
-					project.data.highlights.length === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2 lg:grid-cols-4',
-				]}>
-					<h2 id="highlights-title" class="sr-only">Project highlights</h2>
-					{project.data.highlights.map((highlight) => (
-						<div class="rounded-2xl border border-border bg-surface p-5">
-							<p class="font-heading text-3xl">{highlight.value}</p>
-							<p class="mt-2 text-sm text-foreground">{highlight.label}</p>
-							{highlight.context && <p class="mt-1 text-xs text-muted">{highlight.context}</p>}
-						</div>
-					))}
-				</section>}
-
-				<article class="prose prose-base mt-10 max-w-3xl prose-headings:font-heading prose-headings:font-normal prose-headings:text-foreground prose-p:text-foreground prose-a:text-accent prose-a:decoration-accent prose-strong:text-foreground prose-blockquote:border-accent prose-blockquote:text-muted prose-code:text-accent prose-li:text-foreground prose-img:my-10 prose-img:w-full prose-img:rounded-2xl prose-img:border prose-img:border-border prose-img:bg-surface">
-					<Content />
-				</article>
-			</div>
-
-			<aside class="h-fit rounded-2xl border border-border bg-surface p-5 lg:sticky lg:top-6">
-				<h2 class="font-mono text-xs uppercase tracking-[0.18em] text-muted">Project details</h2>
-				<dl class="mt-4 space-y-4 text-sm">
-					<div>
-						<dt class="text-muted">Year</dt>
-						<dd class="mt-1 text-foreground">{project.data.year}</dd>
-					</div>
-					<div>
-						<dt class="text-muted">Category</dt>
-						<dd class="mt-1 capitalize text-foreground">{project.data.category}</dd>
-					</div>
-					{project.data.role && <div><dt class="text-muted">Role</dt><dd class="mt-1 text-foreground">{project.data.role}</dd></div>}
-					{project.data.organization && <div><dt class="text-muted">Organization</dt><dd class="mt-1 text-foreground">{project.data.organization}</dd></div>}
-					<div>
-						<dt class="text-muted">Stack</dt>
-						<dd class="mt-1 leading-6 text-foreground">{project.data.tags.join(' · ')}</dd>
-					</div>
-				</dl>
-			</aside>
-		</div>
-
-		<ProjectPager variant="card" previous={previousProject && { id: previousProject.id, title: previousProject.data.title }} next={nextProject && { id: nextProject.id, title: nextProject.data.title }} />
-		<div class="mt-12 rounded-2xl border border-border bg-surface p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
-			<div>
-				<h2 class="font-heading text-2xl">Explore the project</h2>
-				<p class="mt-2 text-sm leading-6 text-muted">Review the primary project artifact and continue exploring the work.</p>
-			</div>
-			<div class="mt-5 sm:mt-0">
-				{primaryAction && <ProjectActions actions={[primaryAction]} />}
+				<div class="project-reading-layout">
+					<ProjectSectionIndex headings={sectionHeadings} />
+					<article class="project-technical-content prose prose-base mt-6 max-w-none prose-headings:font-heading prose-headings:font-normal prose-headings:text-foreground prose-p:text-foreground prose-a:text-accent prose-a:decoration-accent prose-strong:text-foreground prose-blockquote:border-accent prose-blockquote:text-muted prose-code:text-accent prose-li:text-foreground prose-img:my-6 prose-img:w-full prose-img:rounded-2xl prose-img:border prose-img:border-border prose-img:bg-surface">
+						<Content />
+					</article>
+				</div>
 			</div>
 		</div>
-		<a class="mt-8 inline-block text-sm font-medium text-accent underline underline-offset-4" href="/#work">← Back to selected work</a>
+
 	</main>
 </BaseLayout>

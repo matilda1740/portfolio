@@ -9,18 +9,21 @@ interface Props {
 	image?: string;
 	type?: 'website' | 'article';
 	noindex?: boolean;
+	structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
-	title = 'Matilda Mwendwa Gitonga — Software Engineer',
+	title = 'Matilda Mwendwa Gitonga',
 	description = 'The portfolio of Matilda Mwendwa Gitonga, a software engineer.',
 	image = '/images/social-preview.png',
 	type = 'website',
 	noindex = false,
+	structuredData,
 } = Astro.props;
 const siteUrl = Astro.site ?? new URL('https://www.matildagitonga.com');
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
 const socialImageUrl = new URL(image, siteUrl);
+const structuredDataJson = structuredData ? JSON.stringify(structuredData).replace(/</g, '\\u003c') : undefined;
 ---
 
 <!doctype html>
@@ -44,19 +47,17 @@ const socialImageUrl = new URL(image, siteUrl);
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={socialImageUrl} />
-		<link rel="icon" data-theme-favicon href="/images/icon-light.svg" type="image/svg+xml" />
-		<link rel="alternate icon" data-theme-fallback href="/images/icon-light.ico" type="image/x-icon" />
+		{structuredData && <script type="application/ld+json" set:html={structuredDataJson} />}
+		<link rel="icon" data-theme-favicon href="/images/icon-light.svg?v=2" type="image/svg+xml" />
+		<link rel="alternate icon" data-theme-fallback href="/images/icon-light.ico?v=2" type="image/x-icon" />
 		<script is:inline>
 			const savedTheme = localStorage.getItem('theme');
 			const theme = savedTheme || 'light';
 			document.documentElement.dataset.theme = theme;
 			const updateThemeAssets = () => {
 				const suffix = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-				document.querySelector('[data-theme-favicon]')?.setAttribute('href', `/images/icon-${suffix}.svg`);
-				document.querySelector('[data-theme-fallback]')?.setAttribute('href', `/images/icon-${suffix}.ico`);
-				document.querySelectorAll('[data-theme-asset]').forEach((asset) => {
-					asset.setAttribute('src', `/images/icon-${suffix}.svg`);
-				});
+				document.querySelector('[data-theme-favicon]')?.setAttribute('href', `/images/icon-${suffix}.svg?v=2`);
+				document.querySelector('[data-theme-fallback]')?.setAttribute('href', `/images/icon-${suffix}.ico?v=2`);
 			};
 			window.addEventListener('themechange', updateThemeAssets);
 			window.addEventListener('DOMContentLoaded', updateThemeAssets);

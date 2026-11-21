@@ -9,9 +9,14 @@ interface ContactItem {
 
 interface Props {
 	includeLocation?: boolean;
+	compact?: boolean;
+	primaryAction?: {
+		label: string;
+		href: string;
+	};
 }
 
-const { includeLocation = false } = Astro.props;
+const { includeLocation = false, compact = false, primaryAction } = Astro.props;
 
 const items: ContactItem[] = [
 	{ label: 'Email', value: 'matilda1740@gmail.com', href: 'mailto:matilda1740@gmail.com', icon: 'email' },
@@ -21,17 +26,44 @@ const items: ContactItem[] = [
 ];
 ---
 
-<div class="flex flex-wrap gap-3 text-sm">
+<div class:list={[
+	compact
+		? 'resume-contact-links grid grid-cols-2 sm:flex sm:flex-wrap'
+		: 'contact-links grid w-full max-w-xl grid-cols-1 sm:grid-cols-2',
+	'gap-2 text-sm',
+]}>
+	{compact && primaryAction && (
+		<a
+			class="interactive-control interactive-control--accent resume-view-action inline-flex min-h-10 items-center justify-center rounded-2xl px-2.5 py-1.5 text-sm font-medium sm:hidden"
+			href={primaryAction.href}
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			{primaryAction.label}
+		</a>
+	)}
 	{items.map((item) => (
 		item.href
-			? <a class="interactive-control group inline-flex min-h-10 items-center gap-2.5 rounded-2xl border border-border/70 bg-surface/30 px-3 py-2" href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noreferrer' : undefined}>
-				{item.icon === 'email' && <svg aria-hidden="true" class="h-4 w-4 shrink-0 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m4 7 8 6 8-6" /></svg>}
-				{item.icon === 'linkedin' && <svg aria-hidden="true" class="h-4 w-4 shrink-0 text-muted" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 8.25A1.75 1.75 0 1 0 6.5 4.75a1.75 1.75 0 0 0 0 3.5ZM5 9.75h3v9.5H5v-9.5Zm4.75 0h2.88v1.3h.04c.4-.75 1.38-1.55 2.85-1.55 3.05 0 3.61 2.01 3.61 4.63v5.12h-3v-4.54c0-1.08-.02-2.47-1.51-2.47-1.51 0-1.74 1.18-1.74 2.39v4.62h-3v-9.5Z" /></svg>}
-				{item.icon === 'github' && <svg aria-hidden="true" class="h-4 w-4 shrink-0 text-muted" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5a9.5 9.5 0 0 0-3 18.51c.48.09.66-.21.66-.46v-1.67c-2.68.58-3.25-1.13-3.25-1.13-.44-1.11-1.07-1.41-1.07-1.41-.87-.6.07-.59.07-.59.96.07 1.47.99 1.47.99.86 1.46 2.25 1.04 2.8.8.09-.62.34-1.04.61-1.28-2.14-.24-4.39-1.07-4.39-4.76 0-1.05.38-1.9.99-2.57.1-.24-.43-1.22.09-2.54 0 0 .81-.26 2.62.98A9.1 9.1 0 0 1 12 7.04c.82 0 1.64.11 2.4.33 1.81-1.24 2.62-.98 2.62-.98.52 1.32.19 2.3.09 2.54.61.67.99 1.52.99 2.57 0 3.7-2.26 4.51-4.41 4.75.35.3.66.88.66 1.78v2.64c0 .25.18.55.67.46A9.5 9.5 0 0 0 12 2.5Z" /></svg>}
-				<span class="font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted">{item.label}</span>
-				<span class="text-foreground group-hover:text-accent">{item.value}</span>
+			? <a class:list={[
+					'contact-link interactive-control group inline-flex min-h-10 items-center gap-2.5',
+					compact ? 'resume-contact-card rounded-2xl border border-border/70 bg-surface/30 px-2.5 py-1.5 sm:px-3 sm:py-2' : 'w-full rounded-lg px-5 py-3',
+					!compact && item.icon === 'email' ? 'contact-primary sm:col-span-2 bg-accent text-on-accent' : !compact ? 'contact-secondary border border-border/70 text-foreground' : '',
+				]} href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noreferrer' : undefined}>
+				{item.icon === 'email' && <svg aria-hidden="true" class="contact-link-icon h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m4 7 8 6 8-6" /></svg>}
+				{item.icon === 'linkedin' && <svg aria-hidden="true" class="contact-link-icon h-4 w-4 shrink-0 text-muted" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 8.25A1.75 1.75 0 1 0 6.5 4.75a1.75 1.75 0 0 0 0 3.5ZM5 9.75h3v9.5H5v-9.5Zm4.75 0h2.88v1.3h.04c.4-.75 1.38-1.55 2.85-1.55 3.05 0 3.61 2.01 3.61 4.63v5.12h-3v-4.54c0-1.08-.02-2.47-1.51-2.47-1.51 0-1.74 1.18-1.74 2.39v4.62h-3v-9.5Z" /></svg>}
+				{item.icon === 'github' && <svg aria-hidden="true" class="contact-link-icon h-4 w-4 shrink-0 text-muted" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5a9.5 9.5 0 0 0-3 18.51c.48.09.66-.21.66-.46v-1.67c-2.68.58-3.25-1.13-3.25-1.13-.44-1.11-1.07-1.41-1.07-1.41-.87-.6.07-.59.07-.59.96.07 1.47.99 1.47.99.86 1.46 2.25 1.04 2.8.8.09-.62.34-1.04.61-1.28-2.14-.24-4.39-1.07-4.39-4.76 0-1.05.38-1.9.99-2.57.1-.24-.43-1.22.09-2.54 0 0 .81-.26 2.62.98A9.1 9.1 0 0 1 12 7.04c.82 0 1.64.11 2.4.33 1.81-1.24 2.62-.98 2.62-.98.52 1.32.19 2.3.09 2.54.61.67.66.88.66 1.78v2.64c0 .25.18.55.67.46A9.5 9.5 0 0 0 12 2.5Z" /></svg>}
+				{compact && <span class="resume-contact-label font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted">{item.label}</span>}
+				{compact && item.icon === 'email' ? (
+					<>
+						<span class="resume-contact-value hidden text-foreground group-hover:text-accent sm:inline">{item.value}</span>
+						<span class="resume-contact-value text-foreground group-hover:text-accent sm:hidden">Email me</span>
+					</>
+				) : (
+					<span class:list={[compact ? 'resume-contact-value text-foreground group-hover:text-accent' : '']}>{compact ? item.value : `${item.label} profile`}</span>
+				)}
+				{!compact && <span aria-hidden="true" class="ml-auto text-base leading-none">↗</span>}
 			</a>
-			: <span class="inline-flex min-h-10 items-center gap-2.5 rounded-2xl border border-border/70 bg-surface/30 px-3 py-2 text-sm text-muted">
+			: <span class="hidden min-h-10 items-center gap-2.5 rounded-2xl border border-border/70 bg-surface/30 px-3 py-2 text-sm text-muted sm:inline-flex">
 				<svg aria-hidden="true" class="h-4 w-4 shrink-0 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 10.5c0 5-8 10-8 10s-8-5-8-10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10.5" r="2.5" /></svg>
 				<span class="font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted">{item.label}</span>
 				<span class="text-foreground">{item.value}</span>

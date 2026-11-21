@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import BrandLogo from './BrandLogo.astro';
+
 interface Props {
 	portraitSrc?: string;
 	portraitAlt?: string;
@@ -20,13 +23,12 @@ const {
 		</div>
 	</div>
 	<div aria-hidden="true" class="absolute right-0 top-[25%] z-0 h-[20%] w-[44%] rounded-[1.25rem] border border-border bg-accent-soft p-3 lg:right-[-10%] lg:top-[25%] lg:z-auto lg:h-[27%] lg:w-[48%] lg:rounded-[1.5rem] lg:p-4">
-		<img src="/images/icon-light.svg" data-theme-asset alt="" class="absolute right-3 top-3 h-6 w-6 opacity-50 lg:right-4 lg:top-4 lg:h-9 lg:w-9" />
+		<BrandLogo class="absolute right-3 top-3 h-6 w-6 opacity-50 lg:right-4 lg:top-4 lg:h-9 lg:w-9" />
 		<p class="absolute bottom-4 right-3 max-w-[4rem] text-right font-heading text-xs leading-tight text-foreground lg:bottom-6 lg:right-4 lg:max-w-[7rem] lg:text-lg">Curious by habit.</p>
 	</div>
 	<div aria-hidden="true" class="absolute bottom-[12%] left-0 z-20 h-[20%] w-[74%] rounded-[1.25rem] border border-border bg-surface p-3 lg:bottom-[10%] lg:left-[-2%] lg:h-[22%] lg:w-[74%] lg:rounded-[1.5rem] lg:p-4">
 		<div class="flex items-start justify-between gap-4">
 			<p class="font-mono text-[0.55rem] uppercase tracking-[0.14em] text-muted lg:text-[0.65rem] lg:tracking-[0.16em]">Data systems</p>
-			<span class="font-mono text-[0.55rem] uppercase tracking-[0.1em] text-muted lg:text-[0.6rem] lg:tracking-[0.12em]">01 / 03</span>
 		</div>
 		<div class="mt-3 flex items-center gap-2 lg:mt-4">
 			<span class="h-2.5 w-2.5 rounded-full bg-accent"></span>
@@ -42,6 +44,6 @@ const {
 		</div>
 	</div>
 	<figure class="absolute left-[20%] top-[14%] z-10 h-[64%] w-[60%] overflow-hidden rounded-[1.5rem] border border-accent bg-accent shadow-xl lg:left-[21%] lg:top-[13%] lg:h-[72%] lg:w-[58%] lg:rounded-[1.75rem]">
-		<img src={portraitSrc} alt={portraitAlt} class="block h-full w-full object-contain object-center" loading="eager" decoding="async" />
+		<Image src={portraitSrc} alt={portraitAlt} width={768} height={768} class="block h-full w-full object-contain object-center" loading="eager" decoding="async" />
 	</figure>
 </div>

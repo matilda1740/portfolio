@@ -1,6 +1,19 @@
-<footer class="border-t border-border">
-	<div class="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:px-10">
-		<p>© {new Date().getFullYear()} Matilda Gitonga</p>
-		<a class="transition-colors hover:text-foreground" href="#top">Back to top ↑</a>
+<footer class="site-footer border-t border-border">
+	<div class="site-footer-inner mx-auto flex max-w-7xl flex-row items-center justify-between gap-4 px-6 py-6 text-sm text-muted sm:px-10 sm:py-5">
+		<p class="site-footer-copy">© {new Date().getFullYear()} Matilda Gitonga</p>
+		<a class="back-to-top site-footer-link" data-back-to-top href="#top" aria-label="Back to top" tabindex="-1"><span class="back-to-top-label">Back to top</span> <span aria-hidden="true">↑</span></a>
 	</div>
 </footer>
+
+<script>
+	const backToTop = document.querySelector<HTMLAnchorElement>('[data-back-to-top]');
+	const updateBackToTop = () => {
+		const isVisible = window.scrollY > 480;
+		backToTop?.classList.toggle('invisible', !isVisible);
+		backToTop?.classList.toggle('opacity-0', !isVisible);
+		backToTop?.setAttribute('tabindex', isVisible ? '0' : '-1');
+	};
+
+	updateBackToTop();
+	window.addEventListener('scroll', updateBackToTop, { passive: true });
+</script>

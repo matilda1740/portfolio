@@ -1,8 +1,8 @@
 <button
 	type="button"
-	class="interactive-control inline-flex items-center gap-2 rounded-full border border-border px-2.5 py-2 text-sm text-foreground sm:px-3"
+	class="theme-toggle interactive-control inline-flex items-center gap-2 rounded-lg border border-border px-2.5 py-2 text-sm text-foreground sm:px-3"
 	data-theme-toggle
-	aria-label="Use dark theme"
+	aria-label="Dark mode"
 	aria-pressed="false"
 >
 	<span aria-hidden="true" data-theme-icon>☾</span>
@@ -18,7 +18,7 @@
 		const isDark = document.documentElement.dataset.theme === 'dark';
 		if (toggle && icon && label) {
 			toggle.setAttribute('aria-pressed', String(isDark));
-			toggle.setAttribute('aria-label', isDark ? 'Use light theme' : 'Use dark theme');
+			toggle.setAttribute('aria-label', isDark ? 'Light mode' : 'Dark mode');
 			icon.textContent = isDark ? '☀' : '☾';
 			label.textContent = isDark ? 'Light mode' : 'Dark mode';
 		}
